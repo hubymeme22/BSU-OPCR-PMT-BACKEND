@@ -4,7 +4,7 @@
     a opcr which will be set by the head account.
 */
 const mongoose = require('mongoose');
-const Campus = mongoose.Schema({
+const Campus = new mongoose.Schema({
     campusName: {
         type: String,
         required: true,

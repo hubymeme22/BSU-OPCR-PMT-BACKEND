@@ -7,7 +7,7 @@
     the 'pmt' account will have 'campusAssigned' field.
 */
 const mongoose = require('mongoose');
-const Account = mongoose.Schema({
+const Account = new mongoose.Schema({
     username: {
         type: String,
         unique: true,

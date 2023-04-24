@@ -8,9 +8,13 @@ const serverIp = process.env.IP;
 const serverPort = process.env.PORT;
 const mongodbURI = process.env.MONGODB_URI;
 
-// routes assigning
+// for parsing data
 app.use(express.json());
 app.use(cookieParser());
+
+// routes assigning
+const loginRoute = require('./routes/login');
+app.use(loginRoute);
 
 console.log('[*] Connecting to database');
 mongoose.set('strictQuery', true);

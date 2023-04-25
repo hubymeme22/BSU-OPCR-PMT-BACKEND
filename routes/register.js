@@ -12,28 +12,9 @@ registerRoute.use(midParam.paramCheckMiddle(['username', 'password']));
 
 // registers a new office head account
 registerRoute.post('/register/head', (req, res) => {
-    // the head must be registered to his/her respective office
-    // the office must be an ObjecID string
-    const missedParams = param.paramChecker(['campus', 'office'], req.body);
-    if (missedParams.length > 0)
-        return res.json({ registered: false, error: `MissedParams:${missedParams}` });
-
     // proceed to registering this account
-    const { username, password, campus, office } = req.body;
-    routeOp.registerHead(username, password, office, res);
-});
-
-// registers a new pmt account
-registerRoute.post('/register/pmt', (req, res) => {
-    // the pmt must be registered to his/her respective campuses
-    // the campus must be an ObjecID string
-    const missedParams = param.paramChecker(['campus'], req.body);
-    if (missedParams.length > 0)
-        return res.json({ registered: false, error: `MissedParams:${missedParams}` });
-
-    // proceed to registering this account
-    const { username, password, campus } = req.body;
-    routeOp.registerPMT(username, password, campus, res);
+    const { username, password } = req.body;
+    routeOp.registerHead(username, password, res);
 });
 
 module.exports = registerRoute;

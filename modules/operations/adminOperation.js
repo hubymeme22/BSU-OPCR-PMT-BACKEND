@@ -50,3 +50,17 @@ module.exports.setDepartmentAccount = async (campusID, departmentID, accountID, 
         res.json(responseFormat);
     }
 };
+
+// retrieves all the campus and its departments
+module.exports.getCampusData = async (res) => {
+    const responseFormat = { campus: [], error: null };
+
+    try {
+        const campusData = await Campus.find().populate({ path: 'departments', model: 'accounts' });
+        responseFormat.campus = campusData;
+        res.json(responseFormat);
+    } catch (err) {
+        responseFormat.error = err;
+        res.json(responseFormat);
+    }
+}

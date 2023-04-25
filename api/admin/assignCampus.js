@@ -14,9 +14,12 @@ assignCampusAPI.use(cookiePerm.setErrorFormat({ added: false, error: null }));
 
 // parameter filter checking
 assignCampusAPI.use(midParam.paramCheckMiddle(['campusName', 'departmentDetails'], { added: false, error: null }));
-assignCampusAPI.use(midParam.arrayParamCheckMiddle(['deptName'], 'departmentDetails', { added: false, error: null }));
+assignCampusAPI.use(midParam.arrayParamCheckMiddle(['name'], 'departmentDetails', { added: false, error: null }));
 
 // sets a campus alongside with the offices that belongs to this campus
-assignCampusAPI.post('/campus', (req, res) => {
-    routeOp.addCampus(req.campusName, req.departmentDetails);
+assignCampusAPI.post('/', (req, res) => {
+    const { campusName, departmentDetails } = req.body;
+    routeOp.addCampus(campusName, departmentDetails, res);
 });
+
+module.exports = assignCampusAPI;

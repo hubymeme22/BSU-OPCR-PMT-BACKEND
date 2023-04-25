@@ -1,4 +1,5 @@
 const Campus = require('../../models/campus');
+const Account = require('../../models/accounts');
 const mongoose = require('mongoose');
 
 /*
@@ -63,4 +64,30 @@ module.exports.getCampusData = async (res) => {
         responseFormat.error = err;
         res.json(responseFormat);
     }
-}
+};
+
+// retrieves all the account data
+module.exports.getAccounts = async (accountType, res) => {
+    const responseFormat = { accounts: [], error: null };
+
+    try {
+        // checking of account types
+        if (accountType == 'head' || accountType == 'pmt') {
+            const accounts = await Account.find({ access: accountType })
+            if (accounts != null)
+                accounts.forEach(acc => {
+                    acc.password = 'xxxxxxxx';
+                });
+
+            responseFormat.accounts = accounts;
+            return res.json(responseFormat);
+        }
+
+        // account type not valid
+        throw 'InvalidAccountType';
+
+    } catch (err) {
+        responseFormat.error = err;
+        res.json(responseFormat);
+    }
+};

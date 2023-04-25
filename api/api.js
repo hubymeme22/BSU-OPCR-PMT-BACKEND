@@ -3,6 +3,7 @@
 */
 const APIRoute = require('express').Router();
 const retrieveCampuses = require('./admin/retrieveCampuses');
+const retrieveAccounts = require('./admin/retrieveAccounts');
 const assignAccountAPI = require('./admin/assignAccounts');
 const assignCampus = require('./admin/assignCampus');
 const getOfficeOpcr = require('./pmt/getOfficeOpcr');
@@ -13,6 +14,7 @@ const getOfficeOpcr = require('./pmt/getOfficeOpcr');
 APIRoute.use('/campus/all', retrieveCampuses);
 APIRoute.use('/campus', assignCampus);
 APIRoute.use('/assign', assignAccountAPI);
+APIRoute.use('/accounts', retrieveAccounts);
 
 //////////////////////////////////
 //  routes with pmt permission  //

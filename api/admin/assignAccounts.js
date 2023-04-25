@@ -13,7 +13,9 @@ assignAccountAPI.use(cookiePerm.setErrorFormat(responseFormat));
 
 // assign the needed parameters for this route
 assignAccountAPI.use(midParam.paramCheckMiddle(['campusID', 'departmentID', 'accountID'], responseFormat));
-assignAccountAPI.post('/assign', (req, res) => {
+assignAccountAPI.post('/', (req, res) => {
     const { campusID, departmentID, accountID } = req.body;
     routeOp.setDepartmentAccount(campusID, departmentID, accountID, res);
 });
+
+module.exports = assignAccountAPI;

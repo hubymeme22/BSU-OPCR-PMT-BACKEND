@@ -10,8 +10,10 @@ module.exports.setTokenPerm = (permission) => {
         const { token } = req.cookies;
         try {
             const userdata = jwt.verify(token, process.env.SECRET_KEY).accountData;
-            if (userdata.access != permission)
-                return req.allowedDataError = true;
+            if (userdata.access != permission) {
+                req.allowedDataError = true;
+                next();
+            }
 
             req.allowedData = userdata;
             next();

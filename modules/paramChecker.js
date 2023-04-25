@@ -17,4 +17,6 @@ module.exports.paramArrayChecker = (params, arr) => {
         if (missed.length > 0)
             missedParams.push(missed);
     });
+
+    return missedParams;
 };

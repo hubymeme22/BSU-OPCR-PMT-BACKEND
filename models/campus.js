@@ -20,6 +20,7 @@ const Campus = new mongoose.Schema({
         // this part will be assigned by the admin soon
         assignedTo: {
             type: mongoose.Types.ObjectId,
+            ref: 'accounts',
             required: false
         },
 

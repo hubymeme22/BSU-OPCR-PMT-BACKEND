@@ -13,8 +13,13 @@ app.use(express.json());
 app.use(cookieParser());
 
 // routes assigning
+const logger = require('./middlewares/logger');
 const loginRoute = require('./routes/login');
+const registerRoute = require('./routes/register');
+
+app.use(logger());
 app.use(loginRoute);
+app.use(registerRoute);
 
 console.log('[*] Connecting to database');
 mongoose.set('strictQuery', true);

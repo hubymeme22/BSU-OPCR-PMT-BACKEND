@@ -16,8 +16,10 @@ app.use(cookieParser());
 const logger = require('./middlewares/logger');
 const loginRoute = require('./routes/login');
 const registerRoute = require('./routes/register');
+const APIRoute = require('./api/api');
 
 app.use(logger());
+app.use('/api', APIRoute);
 app.use(loginRoute);
 app.use(registerRoute);
 

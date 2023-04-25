@@ -33,17 +33,27 @@ module.exports.addCampus = async (campusName, departmentDetails, res) => {
 module.exports.setDepartmentAccount = async (campusID, departmentID, accountID, res) => {
     const responseFormat = { assigned: false, error: null };
     try {
-        const campusData = await Campus.findOne({ _id: mongoose.mongo.ObjectId(campusID), departments: { $elemMatch: { _id: departmentId } } });
+        const campusData = await Campus.findOne({ _id: campusID, departments: { $elemMatch: { _id: departmentID } } });
+        const accountData = await Account.findOne({ _id: accountID });
+
+        if (accountData == null) throw 'NonexistentAccount';
         if (campusData == null) throw 'DoesNotExist';
 
         // retrieve the department index from the array
         const departmentIndex = campusData.departments.findIndex(item => {
-            return item._id == mongoose.mongo.ObjectId(departmentID);
+            return item._id == departmentID;
         });
 
         // a nonexistent department id
         if (departmentIndex < 0) throw 'NonexistentDepartment';
-        campusData.departments[departmentIndex].assignedTo = mongoose.mongo.ObjectId(accountID);
+
+        campusData.departments[departmentIndex].assignedTo = accountID;
+        accountData.campusAssigned = campusData._id;
+        accountData.officeAssigned = campusData.departments[departmentIndex]._id;
+
+        await campusData.save();
+        await accountData.save();
+
         responseFormat.assigned = true;
         res.json(responseFormat);
     } catch (err) {

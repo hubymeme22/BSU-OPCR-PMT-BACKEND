@@ -19,6 +19,6 @@ APIRoute.use('/accounts', retrieveAccounts);
 //////////////////////////////////
 //  routes with pmt permission  //
 //////////////////////////////////
-APIRoute.use('/office', getOfficeOpcr);
+APIRoute.use('/office/available-opcr', getOfficeOpcr);
 
 module.exports = APIRoute;

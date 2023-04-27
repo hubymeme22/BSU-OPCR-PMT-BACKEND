@@ -11,6 +11,17 @@ const Campus = new mongoose.Schema({
         unique: true
     },
 
+    assignedPMT: [{
+        pmtUsername: {
+            type: String,
+            required: true
+        },
+        approved: {
+            type: Boolean,
+            default: false
+        }
+    }],
+
     departments: [{
         name: {
             type: String,
@@ -39,6 +50,12 @@ const Campus = new mongoose.Schema({
                 successIndicator: {
                     type: String,
                     required: true
+                },
+
+                // this comments will be added by the pmt accounts
+                comment: {
+                    type: String,
+                    required: false
                 }
             }]
         }]

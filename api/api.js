@@ -13,7 +13,7 @@ const getOfficeOpcr = require('./pmt/getOfficeOpcr');
 ////////////////////////////////////
 APIRoute.use('/campus/all', retrieveCampuses);
 APIRoute.use('/campus', assignCampus);
-APIRoute.use('/assign/head', assignAccountAPI);
+APIRoute.use('/assign', assignAccountAPI);
 APIRoute.use('/accounts', retrieveAccounts);
 
 //////////////////////////////////

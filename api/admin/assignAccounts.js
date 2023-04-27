@@ -12,12 +12,20 @@ assignAccountAPI.use(cookiePerm.setTokenPerm('admin'));
 assignAccountAPI.use(cookiePerm.setErrorFormat(responseFormat));
 
 // assign the needed parameters for this route
-assignAccountAPI.use(midParam.paramCheckMiddle(['campusID', 'departmentID', 'accountID'], responseFormat));
-assignAccountAPI.post('/', (req, res) => {
+let paramCheckMiddleware = midParam.paramCheckMiddle(['campusID', 'departmentID', 'accountID'], responseFormat);
+assignAccountAPI.post('/head', paramCheckMiddleware, (req, res) => {
     if (req.allowedDataError) return;
 
     const { campusID, departmentID, accountID } = req.body;
     routeOp.setDepartmentAccount(campusID, departmentID, accountID, res);
+});
+
+paramCheckMiddleware = midParam.paramCheckMiddle(['campusID', 'accountID'], responseFormat);
+assignAccountAPI.post('/pmt', paramCheckMiddleware, (req, res) => {
+    if (req.allowedDataError) return;
+
+    const { campusID, accountID } = req.body;
+    routeOp.setCampusAccount(campusID, accountID, res);
 });
 
 module.exports = assignAccountAPI;

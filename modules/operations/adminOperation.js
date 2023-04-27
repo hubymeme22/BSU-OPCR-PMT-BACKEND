@@ -37,6 +37,7 @@ module.exports.setDepartmentAccount = async (campusID, departmentID, accountID, 
         const accountData = await Account.findOne({ _id: accountID });
 
         if (accountData == null) throw 'NonexistentAccount';
+        if (accountData.access != 'head') throw 'NotHeadAccount';
         if (campusData == null) throw 'DoesNotExist';
 
         // retrieve the department index from the array
@@ -52,6 +53,29 @@ module.exports.setDepartmentAccount = async (campusID, departmentID, accountID, 
         accountData.officeAssigned = campusData.departments[departmentIndex]._id;
 
         await campusData.save();
+        await accountData.save();
+
+        responseFormat.assigned = true;
+        res.json(responseFormat);
+    } catch (err) {
+        responseFormat.error = err;
+        res.json(responseFormat);
+    }
+};
+
+// sets the pmt account to specified campus
+module.exports.setCampusAccount = async (campusID, accountID, res) => {
+    const responseFormat = { assigned: false, error: null };
+
+    try {
+        const accountData = await Account.findOne({ _id: accountID });
+        const campusData = await Campus.findOne({ _id: campusID });
+
+        if (accountData == null) throw 'ExpiredAccount';
+        if (accountData.access != 'pmt') throw 'NotPMTAccount';
+        if (campusData == null) throw 'NonexistentCampusID';
+        
+        accountData.campusAssigned = campusID;
         await accountData.save();
 
         responseFormat.assigned = true;

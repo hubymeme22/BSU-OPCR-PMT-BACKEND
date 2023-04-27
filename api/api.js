@@ -9,24 +9,26 @@ const assignCampus = require('./admin/assignCampus');
 const getOfficeOpcr = require('./pmt/getOfficeOpcr');
 const setOpcrStatus = require('./pmt/setOpcrStatus');
 const addOpcr = require('./head/addOPCR');
+const retrieveOpcr = require('./head/retrieveOPCR');
 
 ////////////////////////////////////
 //  routes with admin permission  //
 ////////////////////////////////////
-APIRoute.use('/admin/campus/all', retrieveCampuses);
-APIRoute.use('/admin/campus', assignCampus);
-APIRoute.use('/admin/assign', assignAccountAPI);
-APIRoute.use('/admin/accounts', retrieveAccounts);
+APIRoute.use('/admin/read/campus/', retrieveCampuses);
+APIRoute.use('/admin/create/campus', assignCampus);
+APIRoute.use('/admin/assign/account', assignAccountAPI);
+APIRoute.use('/admin/read/account', retrieveAccounts);
 
 //////////////////////////////////
 //  routes with pmt permission  //
 //////////////////////////////////
-APIRoute.use('/pmt/office/available-opcr', getOfficeOpcr);
-APIRoute.use('/pmt/opcr', setOpcrStatus);
+APIRoute.use('/pmt/read/office/', getOfficeOpcr);
+APIRoute.use('/pmt/status/opcr', setOpcrStatus);
 
 ///////////////////////////////////
 //  routes with head permission  //
 ///////////////////////////////////
-APIRoute.use('/head/opcr', addOpcr);
+APIRoute.use('/head/read/opcr', retrieveOpcr);
+APIRoute.use('/head/create/opcr', addOpcr);
 
 module.exports = APIRoute;

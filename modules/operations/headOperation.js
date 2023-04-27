@@ -40,3 +40,21 @@ module.exports.createOPCR = async (campusID, departmentID, opcrData, res) => {
         res.json(responseFormat);
     }
 };
+
+module.exports.retrieveOpcr = async (campusID, departmentID, res) => {
+    const responseFormat = { opcr: [], status: '', error: null };
+    try {
+        const campusData = await Campus.findOne({ _id: campusID });
+        if (campusData == null) throw 'ExpiredCampus';
+
+        const departmentData = campusData.departments.find(item => item._id == departmentID);
+        if (!departmentData) throw 'NonexistentDepartment';
+
+        responseFormat.opcr = departmentData.opcr;
+        responseFormat.status = 
+        res.json(responseFormat);
+    } catch (err) {
+        responseFormat.error = err;
+        res.json(responseFormat);
+    }
+};

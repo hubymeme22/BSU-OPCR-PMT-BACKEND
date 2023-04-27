@@ -1,6 +1,5 @@
 const Campus = require('../../models/campus');
 const Account = require('../../models/accounts');
-const mongoose = require('mongoose');
 
 /*
     adds a campus with respective department details, the details includes
@@ -74,9 +73,19 @@ module.exports.setCampusAccount = async (campusID, accountID, res) => {
         if (accountData == null) throw 'ExpiredAccount';
         if (accountData.access != 'pmt') throw 'NotPMTAccount';
         if (campusData == null) throw 'NonexistentCampusID';
-        
+
+        // update the opcr calibrators
+        campusData.departments.forEach(dept => {
+            dept.opcr.forEach(opcr => {
+                const check = opcr.calibrate.findIndex(item => item.userid == accountID);
+                if (check < 0)
+                    opcr.calibrate.push({ userid: accountID, status: false })
+            });
+        });
+
         accountData.campusAssigned = campusID;
         await accountData.save();
+        await campusData.save();
 
         responseFormat.assigned = true;
         res.json(responseFormat);

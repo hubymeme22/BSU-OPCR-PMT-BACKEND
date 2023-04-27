@@ -11,17 +11,6 @@ const Campus = new mongoose.Schema({
         unique: true
     },
 
-    assignedPMT: [{
-        pmtUsername: {
-            type: String,
-            required: true
-        },
-        approved: {
-            type: Boolean,
-            default: false
-        }
-    }],
-
     departments: [{
         name: {
             type: String,
@@ -37,6 +26,18 @@ const Campus = new mongoose.Schema({
 
         // this part will be assigned by the head account
         opcr: [{
+            calibrate: [{
+                userid: {
+                    type: String,
+                    required: true
+                },
+
+                status: {
+                    type: Boolean,
+                    default: false
+                },
+            }],
+
             target: {
                 type: String,
                 required: true

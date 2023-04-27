@@ -4,14 +4,20 @@
     derived from the cookie provided.
 */
 const cookiePerm = require('../../middlewares/cookieTokenChecker');
+const routeOp = require('../../modules/operations/pmtOperations');
 const getOfficeOpcr = require('express').Router();
 
 // set permission to pmt accounts
-getOfficeOpcr.use(cookiePerm.setTokenPerm('pmt'));
-getOfficeOpcr.use(cookiePerm.setErrorFormat({ opcr: [], error: null }));
+const permissionCheckers = [
+    cookiePerm.setTokenPerm('pmt'),
+    cookiePerm.setErrorFormat({ opcr: [], error: null })
+];
 
-getOfficeOpcr.get('/', (req, res) => {
-    const accountData = req.allowedData;
+getOfficeOpcr.get('/', permissionCheckers, (req, res) => {
+    if (req.allowedDataError) return;
+
+    const accountUsername = req.allowedData.username;
+    routeOp.getOpcrList(accountUsername.username, res);
 });
 
 module.exports = getOfficeOpcr;

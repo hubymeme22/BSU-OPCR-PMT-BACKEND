@@ -13,10 +13,10 @@ const addOpcr = require('./head/addOPCR');
 ////////////////////////////////////
 //  routes with admin permission  //
 ////////////////////////////////////
-APIRoute.use('/campus/all', retrieveCampuses);
-APIRoute.use('/campus', assignCampus);
-APIRoute.use('/assign', assignAccountAPI);
-APIRoute.use('/accounts', retrieveAccounts);
+APIRoute.use('/admin/campus/all', retrieveCampuses);
+APIRoute.use('/admin/campus', assignCampus);
+APIRoute.use('/admin/assign', assignAccountAPI);
+APIRoute.use('/admin/accounts', retrieveAccounts);
 
 //////////////////////////////////
 //  routes with pmt permission  //

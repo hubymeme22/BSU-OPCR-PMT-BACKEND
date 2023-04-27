@@ -1,5 +1,6 @@
 const Campus = require('../../models/campus');
 const Account = require('../../models/accounts');
+const mongoose = require('mongoose');
 
 // retrieves all the opcr assigned to a campus
 module.exports.getOpcrList = async (username, res) => {
@@ -31,7 +32,7 @@ module.exports.getOpcrList = async (username, res) => {
 };
 
 // declines the opcr and sets the comment(s) for success indicators
-module.exports.declineOPCR = async (campusID, declineList, res) => {
+module.exports.declineOPCR = async (accountID, campusID, declineList, res) => {
     const responseFormat = { declined: false, error: null };
 
     try {
@@ -46,13 +47,19 @@ module.exports.declineOPCR = async (campusID, declineList, res) => {
             const campusDeptIndex = campusData.departments.findIndex(item => item._id == departmentID);
 
             // retrieve the specific target from the department
-            if (campusDeptIndex > 0) {
+            if (campusDeptIndex >= 0) {
                 targets.forEach(targetDetails => {
                     // retrieve the success indicators from the target
                     const { targetID, successIDs } = targetDetails;
+
                     const targetIndex = campusData.departments[campusDeptIndex].opcr.findIndex(item => item._id == targetID);
 
-                    if (targetIndex > 0) {
+                    // set the calibrated to false: indicating that
+                    // the opcr is not calibrated (in case that the pmt already approved to this)
+                    const calibrateIdx = campusData.departments[campusDeptIndex].opcr[targetIndex].calibrate.findIndex(item => item.userid == accountID)
+                    campusData.departments[campusDeptIndex].opcr[targetIndex].calibrate[calibrateIdx].status = false;
+
+                    if (targetIndex >= 0) {
                         successIDs.forEach(successComment => {
                             // retrieve the success indicator index
                             const successIndicatorIndex = campusData.departments[campusDeptIndex].opcr[targetIndex]
@@ -67,7 +74,13 @@ module.exports.declineOPCR = async (campusID, declineList, res) => {
                     }
                 });
             }
-        })
+        });
+
+        // save the changes applied
+        await campusData.save();
+        responseFormat.declined = true;
+        res.json(responseFormat);
+
     } catch (err) {
         responseFormat.error = err;
         res.json(responseFormat);

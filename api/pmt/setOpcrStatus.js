@@ -56,7 +56,8 @@ setOpcrStatus.post('/decline', (req, res) => {
     }
 
     // proceeds to execute the route task
-    routeOP.declineOPCR(req.allowedData.assignedCampus, req.body, res);
+    const { campusAssigned, _id } = req.allowedData;
+    routeOP.declineOPCR(_id, campusAssigned, req.body, res);
 });
 
 module.exports = setOpcrStatus;

@@ -7,6 +7,7 @@ const retrieveAccounts = require('./admin/retrieveAccounts');
 const assignAccountAPI = require('./admin/assignAccounts');
 const assignCampus = require('./admin/assignCampus');
 const getOfficeOpcr = require('./pmt/getOfficeOpcr');
+const setOpcrStatus = require('./pmt/setOpcrStatus');
 
 ////////////////////////////////////
 //  routes with admin permission  //
@@ -20,5 +21,6 @@ APIRoute.use('/accounts', retrieveAccounts);
 //  routes with pmt permission  //
 //////////////////////////////////
 APIRoute.use('/office/available-opcr', getOfficeOpcr);
+APIRoute.use('/opcr', setOpcrStatus);
 
 module.exports = APIRoute;

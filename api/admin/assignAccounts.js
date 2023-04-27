@@ -5,7 +5,7 @@ const cookiePerm = require('../../middlewares/cookieTokenChecker');
 const midParam = require('../../middlewares/middleParamChecker');
 const routeOp = require('../../modules/operations/adminOperation');
 const assignAccountAPI = require('express').Router();
-const responseFormat = { assigned: true, error: null };
+const responseFormat = { assigned: false, error: null };
 
 // assign permission to this route
 assignAccountAPI.use(cookiePerm.setTokenPerm('admin'));

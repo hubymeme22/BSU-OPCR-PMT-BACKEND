@@ -11,6 +11,7 @@ retrieveCampuses.use(cookiePerm.setErrorFormat({ campus: [], error: null }));
 
 // retrieves all the campus data
 retrieveCampuses.get('/', (req, res) => {
+    if (req.allowedDataError) return;
     routeOp.getCampusData(res);
 });
 

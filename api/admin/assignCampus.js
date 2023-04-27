@@ -18,6 +18,8 @@ assignCampusAPI.use(midParam.arrayParamCheckMiddle(['name'], 'departmentDetails'
 
 // sets a campus alongside with the offices that belongs to this campus
 assignCampusAPI.post('/', (req, res) => {
+    if (req.allowedDAtaError) return;
+
     const { campusName, departmentDetails } = req.body;
     routeOp.addCampus(campusName, departmentDetails, res);
 });

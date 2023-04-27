@@ -8,6 +8,7 @@ retrieveAccounts.use(cookiePerm.setTokenPerm('admin'));
 retrieveAccounts.use(cookiePerm.setErrorFormat({ accounts: [], error: null }));
 
 retrieveAccounts.get('/:type', (req, res) => {
+    if (req.allowedDataError) return;
     routeOp.getAccounts(req.params.type, res);
 });
 

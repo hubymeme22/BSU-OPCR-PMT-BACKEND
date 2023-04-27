@@ -25,7 +25,6 @@ module.exports.getOpcrList = async (username, res) => {
         res.json(responseFormat);
 
     } catch(err) {
-        console.log(err);
         responseFormat.error = err;
         res.json(responseFormat);
     }

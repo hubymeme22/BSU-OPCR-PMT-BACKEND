@@ -60,4 +60,19 @@ setOpcrStatus.post('/decline', (req, res) => {
     routeOP.declineOPCR(_id, campusAssigned, req.body, res);
 });
 
+// accepts an opcr of department
+setOpcrStatus.post('/accept', (req, res) => {
+    if (req.allowedDataError) return;
+
+    // manual checking of parameter
+    const missedParams = paramChecker.paramChecker(['departmentID'], req.body);
+    if (missedParams.length > 0)
+        return res.json({ accepted: false, error: `MissedParams:${missedParams}` });
+
+
+    // proceeds to execute the route task
+    const { _id, campusAssigned, officeAssigned } = req.allowedData;
+    routeOP.acceptOPCR(_id, campusAssigned, officeAssigned, res);
+});
+
 module.exports = setOpcrStatus;

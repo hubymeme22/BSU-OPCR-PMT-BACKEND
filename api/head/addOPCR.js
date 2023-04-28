@@ -28,7 +28,7 @@ addOpcr.use(midParam.paramCheckMiddle(['opcr'], { added: false, error: null }));
 addOpcr.use(midParam.arrayParamCheckMiddle(['target', 'keySuccess'], 'opcr'));
 
 // encodes a new opcr to the account
-addOpcr.post('/add', (req, res) => {
+addOpcr.post('/', (req, res) => {
     if (req.allowedDataError) return;
 
     // another manual checking for keySuccess formatting

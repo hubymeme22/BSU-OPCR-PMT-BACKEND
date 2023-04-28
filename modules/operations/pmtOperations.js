@@ -46,18 +46,17 @@ module.exports.declineOPCR = async (accountID, campusID, declineList, res) => {
             const { departmentID, targets } = declineDetails;
             const campusDeptIndex = campusData.departments.findIndex(item => item._id == departmentID);
 
+            // set the calibrated to false: indicating that
+            // the opcr is not calibrated (in case that the pmt already approved to this)
+            const calibrateIdx = campusData.departments[campusDeptIndex].calibrate.findIndex(item => item.userid == accountID);
+            campusData.departments[campusDeptIndex].calibrate[calibrateIdx].status = false;
+
             // retrieve the specific target from the department
             if (campusDeptIndex >= 0) {
                 targets.forEach(targetDetails => {
                     // retrieve the success indicators from the target
                     const { targetID, successIDs } = targetDetails;
-
                     const targetIndex = campusData.departments[campusDeptIndex].opcr.findIndex(item => item._id == targetID);
-
-                    // set the calibrated to false: indicating that
-                    // the opcr is not calibrated (in case that the pmt already approved to this)
-                    const calibrateIdx = campusData.departments[campusDeptIndex].opcr[targetIndex].calibrate.findIndex(item => item.userid == accountID)
-                    campusData.departments[campusDeptIndex].opcr[targetIndex].calibrate[calibrateIdx].status = false;
 
                     if (targetIndex >= 0) {
                         successIDs.forEach(successComment => {
@@ -86,3 +85,5 @@ module.exports.declineOPCR = async (accountID, campusID, declineList, res) => {
         res.json(responseFormat);
     }
 };
+
+// accepts the opcr of the office

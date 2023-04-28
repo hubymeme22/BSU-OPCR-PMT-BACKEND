@@ -75,12 +75,9 @@ module.exports.setCampusAccount = async (campusID, accountID, res) => {
         if (campusData == null) throw 'NonexistentCampusID';
 
         // update the opcr calibrators
-        campusData.departments.forEach(dept => {
-            dept.opcr.forEach(opcr => {
-                const check = opcr.calibrate.findIndex(item => item.userid == accountID);
-                if (check < 0)
-                    opcr.calibrate.push({ userid: accountID, status: false })
-            });
+        campusData.departments.forEach((dept, index) => {
+            const calibIndex = dept.calibrate.findIndex(item => item.userid == accountID);
+            if (calibIndex < 0) campusData.departments[index].calibrate.push({ userid: accountID, status: false });
         });
 
         accountData.campusAssigned = campusID;

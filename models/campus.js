@@ -24,20 +24,20 @@ const Campus = new mongoose.Schema({
             required: false
         },
 
+        calibrate: [{
+            userid: {
+                type: String,
+                required: true
+            },
+
+            status: {
+                type: Boolean,
+                default: false
+            },
+        }],
+
         // this part will be assigned by the head account
         opcr: [{
-            calibrate: [{
-                userid: {
-                    type: String,
-                    required: true
-                },
-
-                status: {
-                    type: Boolean,
-                    default: false
-                },
-            }],
-
             target: {
                 type: String,
                 required: true

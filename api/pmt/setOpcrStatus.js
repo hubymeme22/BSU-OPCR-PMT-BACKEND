@@ -31,28 +31,30 @@ setOpcrStatus.use(cookiePerm.setErrorFormat(responseFormat));
 setOpcrStatus.post('/decline', (req, res) => {
     if (req.allowedDataError) return;
 
-    // manual checking, since the route will recieve an array (departmentID and target assigning)
-    const responseFormat = { assigned: false, error: null };
-    let missedParams = paramChecker.paramArrayChecker(['departmentID', 'targets'], req.body);
+    // manual checking for specific department
+    const responseFormat = { assigned: false, error: null }
+    let missedParams = paramChecker.paramChecker(['departmentID', 'targets'], req.body);
     if (missedParams.length > 0) {
         responseFormat.error = `MissedParams:${missedParams}`;
-        res.json(responseFormat);
+        return res.json(responseFormat);
     }
 
-    // manually checks the targets and its contents
-    missedParams = [];
-    req.body.forEach(element => {
-        element.targets.forEach((opcrDetails, index) => {
-            const { targetID, successIDs } = opcrDetails;
-
-            // if one of these are not assigned
-            if (!targetID || !successIDs) missedParams.push(`target-success(${index})`);
-        });
-    });
-
+    // manual checking on target values
+    missedParams = paramChecker.paramArrayChecker(['targetID', 'successIDs'], req.body['targets']);
     if (missedParams.length > 0) {
-        responseFormat.error = `MissedParams:${missedParams}`;
-        res.json(responseFormat);
+        responseFormat.error = `MissedParams:targets:${missedParams}`;
+        return res.json(responseFormat);
+    }
+
+    // manual checking on target's success indicator ids
+    for (let i = 0; i < req.body['targets'].length; i++) {
+        const successIndicator = req.body['targets'][i]['successIDs'];
+        missedParams = paramChecker.paramArrayChecker(['id', 'comment'], successIndicator);
+
+        if (missedParams.length > 0) {
+            responseFormat.error = `MissedParams:targets:success[${i}]:${missedParams}`;
+            return res.json(responseFormat);
+        }
     }
 
     // proceeds to execute the route task

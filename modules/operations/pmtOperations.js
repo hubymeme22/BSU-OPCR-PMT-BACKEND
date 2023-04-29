@@ -1,6 +1,5 @@
 const Campus = require('../../models/campus');
 const Account = require('../../models/accounts');
-const mongoose = require('mongoose');
 
 // retrieves all the opcr assigned to a campus
 module.exports.getOpcrList = async (username, res) => {
@@ -32,48 +31,43 @@ module.exports.getOpcrList = async (username, res) => {
 };
 
 // declines the opcr and sets the comment(s) for success indicators
-module.exports.declineOPCR = async (accountID, campusID, declineList, res) => {
+module.exports.declineOPCR = async (accountID, campusID, declineDetails, res) => {
     const responseFormat = { declined: false, error: null };
+    const { departmentID, targets } = declineDetails;
 
     try {
         // retrieves the campus, and update the comments
         const campusData = await Campus.findOne({ _id: campusID });
         if (campusData == null) throw 'CampusRegisteredDoesNotExist';
 
-        // manually assign the comments
-        declineList.forEach(declineDetails => {
-            // retrieve the specific department from the campus
-            const { departmentID, targets } = declineDetails;
-            const campusDeptIndex = campusData.departments.findIndex(item => item._id == departmentID);
+        const departmentIndex = campusData.departments.findIndex(item => item._id == departmentID);
+        if (departmentIndex < 0) throw 'DepartmentDoesntExist';
 
-            // set the calibrated to false: indicating that
-            // the opcr is not calibrated (in case that the pmt already approved to this)
-            const calibrateIdx = campusData.departments[campusDeptIndex].calibrate.findIndex(item => item.userid == accountID);
-            campusData.departments[campusDeptIndex].calibrate[calibrateIdx].status = false;
+        // set the opcr status to false or not yet calbrated
+        const accountIndex = campusData.departments[departmentIndex].calibrate.findIndex(item => item.userid == accountID);
+        if (accountIndex < 0) throw 'PMTNotRegistered';
+        campusData.departments[departmentIndex].calibrate[accountIndex].status = false;
 
-            // retrieve the specific target from the department
-            if (campusDeptIndex >= 0) {
-                targets.forEach(targetDetails => {
-                    // retrieve the success indicators from the target
-                    const { targetID, successIDs } = targetDetails;
-                    const targetIndex = campusData.departments[campusDeptIndex].opcr.findIndex(item => item._id == targetID);
+        // assign the comments by traversing all the targets of department
+        for (let i = 0; i < targets.length; i++) {
+            const { targetID, successIDs } = targets[i];
+            const targetIndex = campusData.departments[departmentIndex].opcr.findIndex(item => item._id == targetID);
 
-                    if (targetIndex >= 0) {
-                        successIDs.forEach(successComment => {
-                            // retrieve the success indicator index
-                            const successIndicatorIndex = campusData.departments[campusDeptIndex].opcr[targetIndex]
-                                                            .keySuccess.findIndex(item => item._id == successComment.id);
+            if (targetIndex < 0) throw 'NonexistentTargetID';
+            for (let j = 0; j < successIDs.length; j++) {
+                const { id, comment } = successIDs[j];
+                const successIndex = campusData
+                    .departments[departmentIndex]
+                    .opcr[targetIndex]
+                    .keySuccess.findIndex(item => item._id == id);
 
-                            // apply the comment to this success indicator
-                            campusData.departments[campusDeptIndex]
-                                .opcr[targetIndex]
-                                .keySuccess[successIndicatorIndex]
-                                .comment = successComment.comment
-                        });
-                    }
-                });
+                // update the comment to this opcr
+                campusData.departments[departmentIndex]
+                    .opcr[targetIndex]
+                    .keySuccess[successIndex]
+                    .comment = comment;
             }
-        });
+        }
 
         // save the changes applied
         await campusData.save();

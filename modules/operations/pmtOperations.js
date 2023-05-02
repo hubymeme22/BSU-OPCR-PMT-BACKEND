@@ -43,6 +43,9 @@ module.exports.declineOPCR = async (accountID, campusID, declineDetails, res) =>
         const departmentIndex = campusData.departments.findIndex(item => item._id == departmentID);
         if (departmentIndex < 0) throw 'DepartmentDoesntExist';
 
+        // set the status to declined
+        campusData.departments[departmentIndex].status = 'Not Calibrated (Declined)';
+
         // set the opcr status to false or not yet calbrated
         const accountIndex = campusData.departments[departmentIndex].calibrate.findIndex(item => item.userid == accountID);
         if (accountIndex < 0) throw 'PMTNotRegistered';
@@ -103,15 +106,17 @@ module.exports.acceptOPCR = async (accountID, campusID, departmentID, res) => {
         });
 
         // resets all the comments into empty string
+        // set the status as calibrated
         if (allPmtApproved) {
-            for (let di = 0; di < campusData.departments.length; di++) {
-                for (let oi = 0; oi < campusData.departments[di].opcr.length; oi++) {
-                    for (let ki = 0; ki < campusData.departments[di].opcr[oi].keySuccess.length; ki++) {
-                        campusData.departments[di]
-                            .opcr[oi]
-                            .keySuccess[ki]
-                            .comment = '';
-                    }
+            campusData.departments[departmentIndex].status = 'Calibrated';
+            const department = campusData.departments[departmentIndex];
+            for (let i = 0; i < department.opcr.length; i++) {
+                const currentOpcr = department.opcr[i];
+                for (let j = 0; j < currentOpcr.keySuccess.length; j++) {
+                    campusData.departments[departmentIndex]
+                        .opcr[i]
+                        .keySuccess[j]
+                        .comment = '';
                 }
             }
         }

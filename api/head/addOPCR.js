@@ -38,15 +38,15 @@ addOpcr.post('/', (req, res) => {
         if (!target || !keySuccess)
             return missedParams.push(`opcrData:${index}`);
 
-        keySuccess.forEach(ks => {
+        keySuccess.forEach((ks, ksi) => {
             const { keyResult, successIndicator } = ks;
-            if (!keyResult || !successIndicator)
-                missedParams.push(`opcrData:keySuccess:${index}`);
+            if (!successIndicator)
+                missedParams.push(`opcrData:keySuccess:${ksi}`);
         });
     });
 
     if (missedParams.length > 0)
-        return res.json({ added: false, error: null });
+        return res.json({ added: false, error: `MissedParams:${missedParams}` });
 
     const { campusAssigned, officeAssigned } = req.allowedData;
     routeOp.createOPCR(campusAssigned, officeAssigned, req.body.opcr, res);

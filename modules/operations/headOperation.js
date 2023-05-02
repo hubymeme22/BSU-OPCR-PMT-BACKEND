@@ -10,6 +10,9 @@ module.exports.createOPCR = async (campusID, departmentID, opcrData, res) => {
         const departmentIndex = campusData.departments.findIndex(item => item._id == departmentID);
         if (departmentIndex < 0) throw 'NonexistentDepartment';
 
+        // assign this opcr to be calibrated
+        campusData.departments[departmentIndex].status = 'Calibrating';
+
         // reset the opcr to overwrite
         campusData.departments[departmentIndex].opcr = [];
         for (let i = 0; i < opcrData.length; i++) {
@@ -51,7 +54,7 @@ module.exports.retrieveOpcr = async (campusID, departmentID, res) => {
         if (!departmentData) throw 'NonexistentDepartment';
 
         responseFormat.opcr = departmentData.opcr;
-        responseFormat.status = 
+        responseFormat.status = departmentData.status;
         res.json(responseFormat);
     } catch (err) {
         responseFormat.error = err;

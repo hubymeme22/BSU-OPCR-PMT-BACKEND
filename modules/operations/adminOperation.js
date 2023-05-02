@@ -16,6 +16,7 @@ module.exports.addCampus = async (campusName, departmentDetails, res) => {
         // makes a new campus
         const newCampus = new Campus({
             campusName: campusName,
+            status: 'Newly Generated Form',
             departments: departmentDetails
         });
 

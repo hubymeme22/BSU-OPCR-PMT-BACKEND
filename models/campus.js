@@ -36,6 +36,11 @@ const Campus = new mongoose.Schema({
             },
         }],
 
+        status: {
+            type: String,
+            required: false
+        },
+
         // this part will be assigned by the head account
         opcr: [{
             target: {
@@ -44,10 +49,6 @@ const Campus = new mongoose.Schema({
             },
 
             keySuccess: [{
-                keyResult: {
-                    type: String,
-                    required: true
-                },
                 successIndicator: {
                     type: String,
                     required: true
@@ -57,6 +58,12 @@ const Campus = new mongoose.Schema({
                 comment: {
                     type: String,
                     required: false
+                },
+                rating: {
+                    Q: { type: Boolean },
+                    T: { type: Boolean },
+                    E: { type: Boolean },
+                    A: { type: Boolean }
                 }
             }]
         }]

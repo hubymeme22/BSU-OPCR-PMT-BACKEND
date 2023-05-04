@@ -1,12 +1,18 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const app = express();
 
 require('dotenv/config');
 const serverIp = process.env.IP;
 const serverPort = process.env.PORT;
 const mongodbURI = process.env.MONGODB_URI;
+const corsOptions = {
+    origin: process.env.ALLOWED_CORS.split(','),
+    optionsSuccessStatus: 200,
+    credentials: true,
+};
 
 // for parsing data
 app.use(express.json());
@@ -18,6 +24,7 @@ const loginRoute = require('./routes/login');
 const registerRoute = require('./routes/register');
 const APIRoute = require('./api/api');
 
+app.use(cors(corsOptions));
 app.use(logger());
 app.use('/api', APIRoute);
 app.use(loginRoute);

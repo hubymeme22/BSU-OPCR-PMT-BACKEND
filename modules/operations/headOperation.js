@@ -24,9 +24,8 @@ module.exports.createOPCR = async (campusID, departmentID, opcrData, res) => {
 
             // push the keyresults and targets
             for (let j = 0; j < currOpcr.keySuccess.length; j++) {
-                const keysuccess = currOpcr.keySuccess[i];
+                const keysuccess = currOpcr.keySuccess[j];
                 format.keySuccess.push({
-                    keyResult: keysuccess.keyResult,
                     successIndicator: keysuccess.successIndicator
                 });
             }

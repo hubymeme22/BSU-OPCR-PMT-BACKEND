@@ -10,6 +10,10 @@ module.exports.createOPCR = async (campusID, departmentID, opcrData, res) => {
         const departmentIndex = campusData.departments.findIndex(item => item._id == departmentID);
         if (departmentIndex < 0) throw 'NonexistentDepartment';
 
+        // the head already just passed a new opcr
+        if (campusData.departments[departmentIndex].status == 'Calibrating')
+            throw 'CalibrationInProgress';
+
         // assign this opcr to be calibrated
         campusData.departments[departmentIndex].status = 'Calibrating';
 

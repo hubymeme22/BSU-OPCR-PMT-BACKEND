@@ -57,7 +57,8 @@ const Campus = new mongoose.Schema({
                 // this comments will be added by the pmt accounts
                 comment: {
                     type: String,
-                    required: false
+                    required: false,
+                    default: "",
                 },
                 rating: {
                     Q: { type: Boolean },

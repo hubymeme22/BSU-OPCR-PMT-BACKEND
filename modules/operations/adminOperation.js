@@ -132,3 +132,20 @@ module.exports.getAccounts = async (accountType, res) => {
         res.json(responseFormat);
     }
 };
+
+// deletes the campus by ID
+module.exports.deleteCampus = async (campusID, res) => {
+    const responseFormat = { deleted: false, error: null };
+
+    try {
+        const campuses = await Campus.findOne({ _id: campusID });
+        if (campuses == null) throw 'NonexistentCampus';
+
+        await Campus.findOneAndDelete({ _id: campusID });
+        responseFormat.deleted = true;
+        res.json(responseFormat);
+    } catch (err) {
+        responseFormat.error = err;
+        res.json(responseFormat);
+    }
+};

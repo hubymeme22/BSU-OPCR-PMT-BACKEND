@@ -10,12 +10,14 @@ const getOfficeOpcr = require('./pmt/getOfficeOpcr');
 const setOpcrStatus = require('./pmt/setOpcrStatus');
 const addOpcr = require('./head/addOPCR');
 const retrieveOpcr = require('./head/retrieveOPCR');
+const deleteCampusAPI = require('./admin/deleteCampus');
 
 ////////////////////////////////////
 //  routes with admin permission  //
 ////////////////////////////////////
 APIRoute.use('/admin/read/campus/', retrieveCampuses);
 APIRoute.use('/admin/create/campus', assignCampus);
+APIRoute.use('/admin/delete/campus', deleteCampusAPI);
 APIRoute.use('/admin/assign/account', assignAccountAPI);
 APIRoute.use('/admin/read/account', retrieveAccounts);
 

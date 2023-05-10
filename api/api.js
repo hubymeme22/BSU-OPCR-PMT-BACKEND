@@ -33,4 +33,11 @@ APIRoute.use('/pmt/status/opcr', setOpcrStatus);
 APIRoute.use('/head/read/opcr', retrieveOpcr);
 APIRoute.use('/head/create/opcr', addOpcr);
 
+APIRoute.use('/*', (req, res) => {
+    res.json({
+        message: 'Unknown route path',
+        error: null
+    });
+})
+
 module.exports = APIRoute;

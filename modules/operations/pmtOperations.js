@@ -30,6 +30,28 @@ module.exports.getOpcrList = async (username, res) => {
     }
 };
 
+// retrieves all the opcr assigned to a campus
+module.exports.getOpcrListByDeptID = async (username, deptID, res) => {
+    const responseFormat = { opcr: [], error: null };
+    try {
+        const accountData = await Account.findOne({ username: username });
+        if (accountData == null)
+            throw 'ExpiredAccount';
+
+        if (accountData.campusAssigned == null)
+            throw 'NoCampusAssigned';
+
+        const campusData = await Campus.findOne({ _id: accountData.campusAssigned });
+        const department = campusData.departments.find(item => item._id == deptID);
+        responseFormat.opcr = department.opcr;
+        res.json(responseFormat);
+
+    } catch(err) {
+        responseFormat.error = err;
+        res.json(responseFormat);
+    }
+};
+
 // declines the opcr and sets the comment(s) for success indicators
 module.exports.declineOPCR = async (accountID, campusID, declineDetails, res) => {
     const responseFormat = { declined: false, error: null };

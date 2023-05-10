@@ -13,6 +13,15 @@ const permissionCheckers = [
     cookiePerm.setErrorFormat({ opcr: [], error: null })
 ];
 
+// get the department opcr by id
+getOfficeOpcr.get('/:departmentID', permissionCheckers, (req, res) => {
+    if (req.allowedDataError) return;
+
+    const accountUsername = req.allowedData.username;
+    routeOp.getOpcrListByDeptID(accountUsername, req.params.departmentID, res);
+});
+
+// gets all the office's opcr
 getOfficeOpcr.get('/', permissionCheckers, (req, res) => {
     if (req.allowedDataError) return;
 

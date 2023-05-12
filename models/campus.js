@@ -34,6 +34,11 @@ const Campus = new mongoose.Schema({
                 type: Boolean,
                 default: false
             },
+
+            voted: {
+                type: Boolean,
+                default: false
+            }
         }],
 
         status: {

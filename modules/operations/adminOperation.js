@@ -68,7 +68,27 @@ module.exports.setCampusAccount = async (campusID, accountID, res) => {
     const responseFormat = { assigned: false, error: null };
 
     try {
+        // remove to previous campus assigned
         const accountData = await Account.findOne({ _id: accountID });
+        if (accountData.campusAssigned) {
+            const matchedCampus = await Campus.findOne({ _id: accountData.campusAssigned });
+
+            // an existing campus detected
+            if (matchedCampus != null) {
+                console.log(accountID);
+
+                for (let i = 0; i < matchedCampus.departments.length; i++) {
+                    const arrCopy = matchedCampus.departments[i].calibrate;
+                    arrCopy.forEach(user => {
+                        if (user.userid == accountID)
+                            arrCopy.pop(user);
+                    });
+                    matchedCampus.departments[i].calibrate = arrCopy;
+                }
+                await matchedCampus.save();
+            }
+        }
+
         const campusData = await Campus.findOne({ _id: campusID });
 
         if (accountData == null) throw 'ExpiredAccount';

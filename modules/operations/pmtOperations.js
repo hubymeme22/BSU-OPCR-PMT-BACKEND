@@ -3,7 +3,7 @@ const Account = require('../../models/accounts');
 
 // retrieves all the opcr assigned to a campus
 module.exports.getOpcrList = async (username, res) => {
-    const responseFormat = { opcr: [], error: null };
+    const responseFormat = { opcr: [], hasVoted: false, error: null };
     try {
         const accountData = await Account.findOne({ username: username });
         if (accountData == null)
@@ -53,12 +53,16 @@ module.exports.getOpcrListByDeptID = async (username, deptID, res) => {
 };
 
 // declines the opcr and sets the comment(s) for success indicators
-module.exports.declineOPCR = async (accountID, campusID, declineDetails, res) => {
+module.exports.declineOPCR = async (accountID, declineDetails, res) => {
     const responseFormat = { declined: false, error: null };
     const { departmentID, targets } = declineDetails;
 
     try {
         // retrieves the campus, and update the comments
+        const accountData = await Account.findOne({ _id: accountID });
+        if (accountData == null) throw 'AccountDoesNotExistAnymore';
+
+        const campusID = accountData.campusAssigned;
         const campusData = await Campus.findOne({ _id: campusID });
         if (campusData == null) throw 'CampusRegisteredDoesNotExist';
 
@@ -71,7 +75,12 @@ module.exports.declineOPCR = async (accountID, campusID, declineDetails, res) =>
         // set the opcr status to false or not yet calbrated
         const accountIndex = campusData.departments[departmentIndex].calibrate.findIndex(item => item.userid == accountID);
         if (accountIndex < 0) throw 'PMTNotRegistered';
+
+        const hasVoted = campusData.departments[departmentIndex].calibrate[accountIndex].voted;
+        if (hasVoted) throw 'PmtAlreadyVoted';
+
         campusData.departments[departmentIndex].calibrate[accountIndex].status = false;
+        campusData.departments[departmentIndex].calibrate[accountIndex].voted = true;
 
         // assign the comments by traversing all the targets of department
         for (let i = 0; i < targets.length; i++) {

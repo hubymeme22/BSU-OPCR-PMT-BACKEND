@@ -26,7 +26,6 @@ const responseFormat = { assigned: false, error: null };
 setOpcrStatus.use(cookiePerm.setTokenPerm('pmt'));
 setOpcrStatus.use(cookiePerm.setErrorFormat(responseFormat));
 
-
 // declines an opcr and adds a comment on targeted success indicator
 setOpcrStatus.post('/decline', (req, res) => {
     if (req.allowedDataError) return;
@@ -58,8 +57,8 @@ setOpcrStatus.post('/decline', (req, res) => {
     }
 
     // proceeds to execute the route task
-    const { campusAssigned, _id } = req.allowedData;
-    routeOP.declineOPCR(_id, campusAssigned, req.body, res);
+    const { _id } = req.allowedData;
+    routeOP.declineOPCR(_id, req.body, res);
 });
 
 // accepts an opcr of department

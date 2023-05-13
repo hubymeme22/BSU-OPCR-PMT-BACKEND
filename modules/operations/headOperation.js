@@ -4,6 +4,9 @@ const Campus = require('../../models/campus');
 module.exports.createOPCR = async (campusID, departmentID, opcrData, res) => {
     const responseFormat = { added: false, error: null };
     try {
+        // additional check if opcr submitted is empty
+        if (opcrData.length <= 0) throw 'EmptyOPCRList';
+
         const campusData = await Campus.findOne({ _id: campusID });
         if (campusData == null) throw 'ExpiredCampus';
 

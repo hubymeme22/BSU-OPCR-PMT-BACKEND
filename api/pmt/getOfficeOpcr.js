@@ -25,8 +25,8 @@ getOfficeOpcr.get('/:departmentID', permissionCheckers, (req, res) => {
 getOfficeOpcr.get('/', permissionCheckers, (req, res) => {
     if (req.allowedDataError) return;
 
-    const accountUsername = req.allowedData.username;
-    routeOp.getOpcrList(accountUsername, res);
+    const {username, _id} = req.allowedData;
+    routeOp.getOpcrList(_id, username, res);
 });
 
 module.exports = getOfficeOpcr;

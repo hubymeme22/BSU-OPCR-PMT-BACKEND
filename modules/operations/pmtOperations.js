@@ -2,7 +2,7 @@ const Campus = require('../../models/campus');
 const Account = require('../../models/accounts');
 
 // retrieves all the opcr assigned to a campus
-module.exports.getOpcrList = async (username, res) => {
+module.exports.getOpcrList = async (id, username, res) => {
     const responseFormat = { opcr: [], hasVoted: false, error: null };
     try {
         const accountData = await Account.findOne({ username: username });
@@ -18,6 +18,7 @@ module.exports.getOpcrList = async (username, res) => {
 
         // retrieves all the offices details with opcr
         department.forEach(dept => {
+            dept.hasVoted = dept.calibrate.find(item => item.userid == id).voted;
             if (dept.opcr) opcrList.push(dept);
         });
 
@@ -32,7 +33,7 @@ module.exports.getOpcrList = async (username, res) => {
 
 // retrieves all the opcr assigned to a campus
 module.exports.getOpcrListByDeptID = async (username, deptID, res) => {
-    const responseFormat = { opcr: [], error: null };
+    const responseFormat = { opcr: [], hasVoted: false, error: null };
     try {
         const accountData = await Account.findOne({ username: username });
         if (accountData == null)
@@ -43,6 +44,8 @@ module.exports.getOpcrListByDeptID = async (username, deptID, res) => {
 
         const campusData = await Campus.findOne({ _id: accountData.campusAssigned });
         const department = campusData.departments.find(item => item._id == deptID);
+
+        responseFormat.hasVoted = department.calibrate.find(item => item.userid == accountData._id).voted;
         responseFormat.opcr = department.opcr;
         res.json(responseFormat);
 

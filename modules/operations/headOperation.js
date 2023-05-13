@@ -57,7 +57,7 @@ module.exports.retrieveOpcr = async (campusID, departmentID, res) => {
         if (!departmentData) throw 'NonexistentDepartment';
 
         responseFormat.opcr = departmentData.opcr;
-        responseFormat.status = departmentData.status;
+        responseFormat.status = departmentData.status ? departmentData.status : 'Newly Generated Form';
         res.json(responseFormat);
     } catch (err) {
         responseFormat.error = err;

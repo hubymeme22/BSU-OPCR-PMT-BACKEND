@@ -20,6 +20,13 @@ module.exports.createOPCR = async (campusID, departmentID, opcrData, res) => {
         // assign this opcr to be calibrated
         campusData.departments[departmentIndex].status = 'Calibrating';
 
+        // reset all the pmt's calibration status
+        const calibrators = campusData.departments[departmentIndex].calibrate;
+        for (let i = 0; i < calibrators.length; i++) {
+            calibrators[i].status = false;
+            calibrators[i].voted = false;
+        }
+
         // reset the opcr to overwrite
         campusData.departments[departmentIndex].opcr = [];
         for (let i = 0; i < opcrData.length; i++) {

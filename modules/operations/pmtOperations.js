@@ -128,7 +128,11 @@ module.exports.acceptOPCR = async (accountID, campusID, departmentID, res) => {
         // other pmt acccounts already set theirs as true (meaning the paper is valdated)
         // so we have to remove the comments
         const calibrationIndex = campusData.departments[departmentIndex].calibrate.findIndex(item => item.userid == accountID);
+        const hasVoted = campusData.departments[departmentIndex].calibrate[calibrationIndex].voted;
+        if (hasVoted) throw 'PmtAlreadyVoted';
+
         campusData.departments[departmentIndex].calibrate[calibrationIndex].status = true;
+        campusData.departments[departmentIndex].calibrate[calibrationIndex].voted = true;
 
         let allPmtApproved = true;
         campusData.departments[departmentIndex].calibrate.forEach(calibPair => {

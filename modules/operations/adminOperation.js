@@ -169,3 +169,49 @@ module.exports.deleteCampus = async (campusID, res) => {
         res.json(responseFormat);
     }
 };
+
+// deleetes a head account by id
+module.exports.deleteHeadAccount = async (accountID, res) => {
+    const responseFormat = { deleted: false, error: null };
+    try {
+        const accountData = await Account.findOneAndDelete({ _id: accountID });
+        if (accountData == null) throw 'NonexistentAccount';
+
+        responseFormat.deleted = true;
+        res.json(responseFormat);
+
+    } catch (err) {
+        responseFormat.error = err;
+        res.json(responseFormat);
+    }
+};
+
+// deletes a pmt account by id
+module.exports.deletePmtAccount = async (accountID, res) => {
+    const responseFormat = { deleted: false, error: null };
+    try {
+        const accountData = await Account.findOneAndDelete({ _id: accountID });
+        if (accountData == null) throw 'NonexistentAccount';
+
+        // retrieves the campus assigned for this pmt account
+        // and remove as calibrator
+        if (accountData.campusAssigned) {
+            const campusData = await Campus.findOne({ _id: accountData.campusAssigned });
+            campusData.departments.forEach((dept, di) => {
+                dept.calibrate.forEach(user => {
+                    if (user.userid == accountID)
+                        campusData.departments[di].calibrate.pop(user);
+                });
+            });
+
+            await campusData.save();
+        }
+
+        responseFormat.deleted = true;
+        res.json(responseFormat);
+
+    } catch (err) {
+        responseFormat.error = err;
+        res.json(responseFormat);
+    }
+};

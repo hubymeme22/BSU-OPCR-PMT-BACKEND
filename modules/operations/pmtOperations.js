@@ -43,7 +43,10 @@ module.exports.getOpcrListByDeptID = async (username, deptID, res) => {
             throw 'NoCampusAssigned';
 
         const campusData = await Campus.findOne({ _id: accountData.campusAssigned });
+        if (campusData == null) throw 'PmtNotRegistered';
+
         const department = campusData.departments.find(item => item._id == deptID);
+        if (department == null) throw 'NonexistentDepartment';
 
         responseFormat.hasVoted = department.calibrate.find(item => item.userid == accountData._id).voted;
         responseFormat.opcr = department.opcr;

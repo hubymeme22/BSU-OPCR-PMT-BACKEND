@@ -197,12 +197,13 @@ module.exports.deletePmtAccount = async (accountID, res) => {
         // and remove as calibrator
         if (accountData.campusAssigned) {
             const campusData = await Campus.findOne({ _id: accountData.campusAssigned });
-            campusData.departments.forEach((dept, di) => {
-                dept.calibrate.forEach(user => {
-                    if (user.userid == accountID)
-                        campusData.departments[di].calibrate.pop(user);
-                });
-            });
+            for (let i = 0; i < campusData.departments.length; i++) {
+                const arrCopy = campusData.departments[i];
+                const calibrationIndex = arrCopy.calibrate.findIndex(item => item.userid == accountID);
+
+                if (calibrationIndex >= 0)
+                    campusData.departments[i].calibrate.splice(calibrationIndex, 1);
+            }
 
             await campusData.save();
         }

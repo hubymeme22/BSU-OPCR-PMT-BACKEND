@@ -11,6 +11,7 @@ const setOpcrStatus = require('./pmt/setOpcrStatus');
 const addOpcr = require('./head/addOPCR');
 const retrieveOpcr = require('./head/retrieveOPCR');
 const deleteCampusAPI = require('./admin/deleteCampus');
+const deleteAccountAPI = require('./admin/deleteAccount');
 
 ////////////////////////////////////
 //  routes with admin permission  //
@@ -18,6 +19,8 @@ const deleteCampusAPI = require('./admin/deleteCampus');
 APIRoute.use('/admin/read/campus/', retrieveCampuses);
 APIRoute.use('/admin/create/campus', assignCampus);
 APIRoute.use('/admin/delete/campus', deleteCampusAPI);
+APIRoute.use('/admin/delete/account', deleteAccountAPI);
+
 APIRoute.use('/admin/assign/account', assignAccountAPI);
 APIRoute.use('/admin/read/account', retrieveAccounts);
 

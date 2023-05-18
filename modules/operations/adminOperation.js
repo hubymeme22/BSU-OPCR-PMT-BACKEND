@@ -72,19 +72,22 @@ module.exports.setCampusAccount = async (campusID, accountID, res) => {
         const accountData = await Account.findOne({ _id: accountID });
         if (accountData.campusAssigned) {
             const matchedCampus = await Campus.findOne({ _id: accountData.campusAssigned });
+            console.log(`This id has matched campus: ${matchedCampus.campusName}`);
 
             // an existing campus detected
             if (matchedCampus != null) {
                 console.log(accountID);
 
+                // searches for all the departments
                 for (let i = 0; i < matchedCampus.departments.length; i++) {
+                    // searches for all calibration list
                     const arrCopy = matchedCampus.departments[i].calibrate;
-                    arrCopy.forEach(user => {
-                        if (user.userid == accountID)
-                            arrCopy.pop(user);
-                    });
-                    matchedCampus.departments[i].calibrate = arrCopy;
+                    const calibrationIndex = arrCopy.findIndex(item => item.userid = accountID);
+
+                    if (calibrationIndex >= 0)
+                        matchedCampus.departments[i].calibrate.splice(calibrationIndex, 1);
                 }
+
                 await matchedCampus.save();
             }
         }

@@ -7,8 +7,6 @@ const frmt = cookiePerm.setErrorFormat({ opcr: [], status: [], error: null });
 
 // retrieves the opcr of the user
 retrieveOpcr.get('/', perm, frmt, (req, res) => {
-    if (req.allowedDataError) return;
-
     const { campusAssigned, officeAssigned } = req.allowedData;
     routeOp.retrieveOpcr(campusAssigned, officeAssigned, res);
 });

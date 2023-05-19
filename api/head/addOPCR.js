@@ -29,8 +29,6 @@ const aprm = midParam.arrayParamCheckMiddle(['target', 'keySuccess'], 'opcr');
 
 // encodes a new opcr to the account
 addOpcr.post('/', perm, frmt, parm, aprm, (req, res) => {
-    if (req.allowedDataError) return;
-
     // another manual checking for keySuccess formatting
     const missedParams = [];
     req.body.opcr.forEach((opcrdata, index) => {

@@ -2,11 +2,11 @@ const cookiePerm = require('../../middlewares/cookieTokenChecker');
 const routeOp = require('../../modules/operations/headOperation');
 const retrieveOpcr = require('express').Router();
 
-retrieveOpcr.use(cookiePerm.setTokenPerm('head'));
-retrieveOpcr.use(cookiePerm.setErrorFormat({ opcr: [], status: [], error: null }));
+const perm = cookiePerm.setTokenPerm('head');
+const frmt = cookiePerm.setErrorFormat({ opcr: [], status: [], error: null });
 
 // retrieves the opcr of the user
-retrieveOpcr.get('/', (req, res) => {
+retrieveOpcr.get('/', perm, frmt, (req, res) => {
     if (req.allowedDataError) return;
 
     const { campusAssigned, officeAssigned } = req.allowedData;

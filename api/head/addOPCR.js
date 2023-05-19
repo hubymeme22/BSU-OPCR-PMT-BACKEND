@@ -20,15 +20,15 @@ const routeOp = require('../../modules/operations/headOperation');
 const addOpcr = require('express').Router();
 
 // permission checking for head accounts
-addOpcr.use(cookiePerm.setTokenPerm('head'));
-addOpcr.use(cookiePerm.setErrorFormat({ added: false, error: null }));
+const perm = cookiePerm.setTokenPerm('head');
+const frmt = cookiePerm.setErrorFormat({ added: false, error: null });
 
 // add parameter checking
-addOpcr.use(midParam.paramCheckMiddle(['opcr'], { added: false, error: null }));
-addOpcr.use(midParam.arrayParamCheckMiddle(['target', 'keySuccess'], 'opcr'));
+const parm = midParam.paramCheckMiddle(['opcr'], { added: false, error: null });
+const aprm = midParam.arrayParamCheckMiddle(['target', 'keySuccess'], 'opcr');
 
 // encodes a new opcr to the account
-addOpcr.post('/', (req, res) => {
+addOpcr.post('/', perm, frmt, parm, aprm, (req, res) => {
     if (req.allowedDataError) return;
 
     // another manual checking for keySuccess formatting

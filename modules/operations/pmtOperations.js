@@ -121,13 +121,13 @@ module.exports.declineOPCR = async (accountID, declineDetails, res) => {
 };
 
 // accepts the opcr of the office
-module.exports.acceptOPCR = async (accountID, campusID, departmentID, res) => {
+module.exports.acceptOPCR = async (accountID, departmentID, res) => {
     const responseFormat = { accepted: false, error: null };
     try {
-        const campusData = await Campus.findOne({ _id: campusID });
+        const campusData = await Campus.findOne({ 'departments._id': departmentID });
         if (campusData == null) throw 'CampusRegisteredDoesNotExist';
 
-        const departmentIndex = campusData.departments.findIndex(item => item._d == departmentID);
+        const departmentIndex = campusData.departments.findIndex(item => item._id == departmentID);
         if (departmentIndex < 0) throw 'NoexistentDepartment';
 
         // mark the calibration status as zero and check if all the

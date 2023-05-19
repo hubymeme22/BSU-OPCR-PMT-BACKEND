@@ -23,11 +23,11 @@ const routeOP = require('../../modules/operations/pmtOperations');
 const setOpcrStatus = require('express').Router();
 const responseFormat = { assigned: false, error: null };
 
-setOpcrStatus.use(cookiePerm.setTokenPerm('pmt'));
-setOpcrStatus.use(cookiePerm.setErrorFormat(responseFormat));
+const perm = cookiePerm.setTokenPerm('pmt');
+const frmt = cookiePerm.setErrorFormat(responseFormat);
 
 // declines an opcr and adds a comment on targeted success indicator
-setOpcrStatus.post('/decline', (req, res) => {
+setOpcrStatus.post('/decline', perm, frmt, (req, res) => {
     if (req.allowedDataError) return;
 
     // manual checking for specific department
@@ -62,7 +62,7 @@ setOpcrStatus.post('/decline', (req, res) => {
 });
 
 // accepts an opcr of department
-setOpcrStatus.post('/accept', (req, res) => {
+setOpcrStatus.post('/accept', perm, frmt, (req, res) => {
     if (req.allowedDataError) return;
 
     // manual checking of parameter
@@ -72,8 +72,8 @@ setOpcrStatus.post('/accept', (req, res) => {
 
 
     // proceeds to execute the route task
-    const { _id, campusAssigned, officeAssigned } = req.allowedData;
-    routeOP.acceptOPCR(_id, campusAssigned, officeAssigned, res);
+    const { _id } = req.allowedData;
+    routeOP.acceptOPCR(_id, req.body.departmentID, res);
 });
 
 module.exports = setOpcrStatus;

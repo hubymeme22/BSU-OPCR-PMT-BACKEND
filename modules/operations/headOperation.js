@@ -58,13 +58,19 @@ module.exports.createOPCR = async (campusID, departmentID, opcrData, res) => {
 };
 
 module.exports.retrieveOpcr = async (campusID, departmentID, res) => {
-    const responseFormat = { opcr: [], status: '', error: null };
+    const responseFormat = { opcr: [], status: '', voted: 0, totalPmt: 0, error: null };
     try {
         const campusData = await Campus.findOne({ _id: campusID });
         if (campusData == null) throw 'ExpiredCampus';
 
         const departmentData = campusData.departments.find(item => item._id == departmentID);
         if (!departmentData) throw 'NonexistentDepartment';
+
+        // for counting the status
+        responseFormat.totalPmt = departmentData.calibrate.length;
+        departmentData.calibrate.forEach(cal => {
+            if (cal.voted) responseFormat.voted++;
+        });
 
         responseFormat.opcr = departmentData.opcr;
         responseFormat.status = departmentData.status ? departmentData.status : 'Newly Generated Form';

@@ -8,22 +8,18 @@ const assignAccountAPI = require('express').Router();
 const responseFormat = { assigned: false, error: null };
 
 // assign permission to this route
-assignAccountAPI.use(cookiePerm.setTokenPerm('admin'));
-assignAccountAPI.use(cookiePerm.setErrorFormat(responseFormat));
+const perm = cookiePerm.setTokenPerm('admin');
+const frmt = cookiePerm.setErrorFormat(responseFormat);
 
 // assign the needed parameters for this route
 let paramCheckMiddleware = midParam.paramCheckMiddle(['campusID', 'departmentID', 'accountID'], responseFormat);
-assignAccountAPI.post('/head', paramCheckMiddleware, (req, res) => {
-    if (req.allowedDataError) return;
-
+assignAccountAPI.post('/head', perm, frmt, paramCheckMiddleware, (req, res) => {
     const { campusID, departmentID, accountID } = req.body;
     routeOp.setDepartmentAccount(campusID, departmentID, accountID, res);
 });
 
 paramCheckMiddleware = midParam.paramCheckMiddle(['campusID', 'accountID'], responseFormat);
-assignAccountAPI.post('/pmt', paramCheckMiddleware, (req, res) => {
-    if (req.allowedDataError) return;
-
+assignAccountAPI.post('/pmt', perm, frmt, paramCheckMiddleware, (req, res) => {
     const { campusID, accountID } = req.body;
     routeOp.setCampusAccount(campusID, accountID, res);
 });

@@ -6,12 +6,11 @@ const routeOp = require('../../modules/operations/adminOperation');
 const retrieveCampuses = require('express').Router();
 
 // assign permission for admin only
-retrieveCampuses.use(cookiePerm.setTokenPerm('admin'));
-retrieveCampuses.use(cookiePerm.setErrorFormat({ campus: [], error: null }));
+const perm = cookiePerm.setTokenPerm('admin');
+const frmt = cookiePerm.setErrorFormat({ campus: [], error: null });
 
 // retrieves all the campus data
-retrieveCampuses.get('/', (req, res) => {
-    if (req.allowedDataError) return;
+retrieveCampuses.get('/', perm, frmt, (req, res) => {
     routeOp.getCampusData(res);
 });
 

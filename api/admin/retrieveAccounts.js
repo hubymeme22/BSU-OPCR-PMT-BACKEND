@@ -4,11 +4,10 @@ const routeOp = require('../../modules/operations/adminOperation');
 const retrieveAccounts = require('express').Router();
 
 // assign permission to admin
-retrieveAccounts.use(cookiePerm.setTokenPerm('admin'));
-retrieveAccounts.use(cookiePerm.setErrorFormat({ accounts: [], error: null }));
+const perm = cookiePerm.setTokenPerm('admin');
+const frmt = cookiePerm.setErrorFormat({ accounts: [], error: null });
 
-retrieveAccounts.get('/:type', (req, res) => {
-    if (req.allowedDataError) return;
+retrieveAccounts.get('/:type', perm, frmt, (req, res) => {
     routeOp.getAccounts(req.params.type, res);
 });
 

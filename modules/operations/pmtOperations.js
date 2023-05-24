@@ -75,8 +75,25 @@ module.exports.declineOPCR = async (accountID, declineDetails, res) => {
         const departmentIndex = campusData.departments.findIndex(item => item._id == departmentID);
         if (departmentIndex < 0) throw 'DepartmentDoesntExist';
 
-        // set the status to declined
-        campusData.departments[departmentIndex].status = 'Not Calibrated (Declined)';
+        // set the status to declined if all of the pmt has voted, and one of them declined
+        const targetDept = campusData.departments[departmentIndex];
+        let allVoted = true;
+        for (let i = 0; i < targetDept.calibrate.length; i++) {
+            if (!targetDept.calibrate[i].voted) {
+                allVoted = false;
+                break;
+            }
+        }
+
+        if (allVoted) {
+            // one of the pmt declined
+            for (let i = 0; i < targetDept.calibrate.length; i++) {
+                if (targetDept.calibrate[i].status == false) {
+                    campusData.departments[departmentIndex].status = 'Not Calibrated (Declined)';
+                    break;
+                }
+            }
+        }
 
         // set the opcr status to false or not yet calbrated
         const accountIndex = campusData.departments[departmentIndex].calibrate.findIndex(item => item.userid == accountID);
